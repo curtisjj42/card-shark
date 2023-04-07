@@ -13,6 +13,7 @@ class Deck:
     def deck_storage(self, card):
         # linked list constructor
         pass
+    
 
 
 class Card:
