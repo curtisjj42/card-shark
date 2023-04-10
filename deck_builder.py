@@ -17,6 +17,29 @@ class Deck:
 
 
 class Card:
-    def __init__(self, suit, value):
+    def __init__(self, suit=None, value=None):
         self.suit = suit
+        self.value = value
+        # linked list elements
+        self.next = None
+        self.prev = None
+
+    def __str__(self):
+        """Returns first letter of suit and value"""
+        return str(self.suit[0]) + str(self.value)
+
+    def set_prev(self, other):
+        """Sets previous card value for linked list"""
+        self.prev = other
+
+    def set_next(self, other):
+        """Sets next card value for linked list"""
+        self.next = other
+
+    def set_suit(self, suit):
+        """Method for setting card suit"""
+        self.suit = suit
+
+    def set_value(self, value):
+        """Method for setting card value"""
         self.value = value
