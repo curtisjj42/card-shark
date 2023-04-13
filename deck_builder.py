@@ -49,6 +49,7 @@ class Deck:
                         # iterate if a card was added to the deck
                         b += 1
                         self.cards.append(card)
+        self.deck_storage()
 
     def deck_storage(self, cards):
         """
