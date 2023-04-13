@@ -14,9 +14,9 @@ class Deck:
         # top and bottom of deck, occupied by a card
         self.bottom = None
         self.top = None
+
         # list to hold all cards
         self.cards = []
-
         # create deck
         self.build_deck()
 
@@ -27,7 +27,7 @@ class Deck:
             if "ace" in self.face_cards:
                 card = Card(each, 1, "ace")
                 self.cards.append(card)
-            # go thru cards 2-10
+            # go thru cards 2-top spot (standard case is 10)
             for i in range(2, self.top_spot+1):
                 # create card
                 card = Card(each, i)
@@ -36,6 +36,7 @@ class Deck:
             # create jack, queen, king if needed - check if face cards is not None
             if self.face_cards is not None:
                 # loop thru each index in face_cards
+                b = 1
                 for i in range(len(self.face_cards)):
                     # skip if card is "ace"
                     if self.face_cards[i] == "ace":
@@ -43,8 +44,10 @@ class Deck:
                     # assign other face card values
                     else:
                         card = Card(each,
-                                    self.top_spot+1,
+                                    self.top_spot+b,
                                     self.face_cards[i])
+                        # iterate if a card was added to the deck
+                        b += 1
                         self.cards.append(card)
 
     def deck_storage(self, cards):
@@ -55,7 +58,6 @@ class Deck:
                 self.bottom = cards[i]
                 cards.prev = None
                 cards.next = cards[i+1]
-    
 
 
 class Card:
