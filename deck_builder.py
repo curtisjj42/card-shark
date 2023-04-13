@@ -75,8 +75,6 @@ class Deck:
                 self.cards[i].next = self.cards[i+1]
 
 
-
-
 class Card:
     def __init__(self, suit=None, value=None, name = None):
         self.suit = suit
