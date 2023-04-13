@@ -51,13 +51,30 @@ class Deck:
                         self.cards.append(card)
 
     def deck_storage(self, cards):
-        for i in range(len(cards)):
+        """
+        Iterates through internal cardholder list, linked each card sequentially
+        :param cards: instance of the Card class
+        :return: None
+        """
+
+        for i in range(len(self.cards)):
             # first card
             if i == 0:
                 # make first card bottom of deck
-                self.bottom = cards[i]
-                cards.prev = None
-                cards.next = cards[i+1]
+                self.bottom = self.cards[i]
+                self.cards[i].prev = None
+                self.cards[i].next = self.cards[i+1]
+            # last card
+            elif i == len(self.cards)-1:
+                self.top = self.cards[i]
+                self.cards[i].prev = self.cards[i-1]
+                self.cards[i].next = None
+            # rest of the cards
+            else:
+                self.cards[i].prev = self.cards[i-1]
+                self.cards[i].next = self.cards[i+1]
+
+
 
 
 class Card:
