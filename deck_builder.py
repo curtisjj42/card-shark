@@ -1,14 +1,8 @@
 class Deck:
-    def __init__(self,
-                 suits = ["hearts", "clubs", "diamonds", "spades"],
-                 face_cards = ["jack", "queen", "king", "ace"],
-                 top_spot = 10,
-                 jokers = False):
+    def __init__(self, jokers = False):
         # make each suit names and face card names lowercase for later processing
-        self.suits = [each.lower() for each in suits]
-        self.face_cards = [each.lower() for each in face_cards]
-        # spot card is any non-face/non-ace but including ten
-        self.top_spot = top_spot
+        self.suits = ["hearts", "clubs", "diamonds", "spades"]
+        self.face_cards = ["jack", "queen", "king", "ace"]
         # using jokers?
         self.jokers = jokers
         # top and bottom of deck, occupied by a card
@@ -23,35 +17,20 @@ class Deck:
     def build_deck(self):
         # go through each suit
         for each in self.suits:
-            # start with ace if needed - indicated in self.face_cards
-            if "ace" in self.face_cards:
-                card = Card(each, 1, "ace")
-                self.cards.append(card)
             # go thru cards 2-top spot (standard case is 10)
-            for i in range(2, self.top_spot+1):
+            for i in range(2, 11):
                 # create card
                 card = Card(each, i)
                 # add card to list of cards
                 self.cards.append(card)
             # create jack, queen, king if needed - check if face cards is not None
-            if self.face_cards is not None:
-                # loop thru each index in face_cards
-                b = 1
-                for i in range(len(self.face_cards)):
-                    # skip if card is "ace"
-                    if self.face_cards[i] == "ace":
-                        pass
-                    # assign other face card values
-                    else:
-                        card = Card(each,
-                                    self.top_spot+b,
-                                    self.face_cards[i])
-                        # iterate if a card was added to the deck
-                        b += 1
-                        self.cards.append(card)
+            for face in self.face_cards:
+                card = Card(each, face)
+                self.cards.append(card)
+
         self.deck_storage()
 
-    def deck_storage(self, cards):
+    def deck_storage(self):
         """
         Iterates through internal cardholder list, linked each card sequentially
         :param cards: instance of the Card class
@@ -77,19 +56,16 @@ class Deck:
 
 
 class Card:
-    def __init__(self, suit=None, value=None, name = None):
+    def __init__(self, suit=None, name=None):
         self.suit = suit
-        self.value = value
+        self.name = name
         # linked list elements
         self.next = None
         self.prev = None
 
-        # optional name for assigning face card values or joker values
-        self.card_name = name
-
     def __str__(self):
         """Returns first letter of suit and value"""
-        return str(self.suit[0]) + str(self.value)
+        return str(self.suit[0]) + str(self.name)
 
     def set_prev(self, other):
         """Sets previous card value for linked list"""
@@ -103,6 +79,6 @@ class Card:
         """Method for setting card suit"""
         self.suit = suit
 
-    def set_value(self, value):
+    def set_name(self, name):
         """Method for setting card value"""
-        self.value = value
+        self.name = name
