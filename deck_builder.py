@@ -54,7 +54,18 @@ class Deck:
                 self.cards[i].prev = self.cards[i-1]
                 self.cards[i].next = self.cards[i+1]
 
-
+        def find(self, card):
+        '''
+        Finds a specific card in the deck, returns its location (index)
+        :parameter card: card you are finding
+        :return: location as an index
+        '''
+        index = 0
+        for item in self.cards:
+            if str(item) == card:
+                return index
+            index += 1
+            
 class Card:
     def __init__(self, suit=None, name=None):
         self.suit = suit
