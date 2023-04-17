@@ -107,6 +107,20 @@ class Deck:
         for card in cards:
             self.pull(card.lower())
 
+    def cut(self):
+        '''
+        Cuts deck in half, and
+        :return: updates the currect deck
+        '''
+        cut_index = len(self.cards) // 2
+        # where the cut is taking place
+        cut_deck = [] #temporary list to store new order
+        for i in range(cut_index, len(self.cards)): # for each item from the cut down, 
+            cut_deck.append(self.cards[i]) #append it to the front of the new list
+        for i in range(0, cut_index): # for each item from the cut up (what you move to the botton of the deck), 
+            cut_deck.append(self.cards[i]) # add it to the new list
+        self.cards = cut_deck
+
 class Card:
     def __init__(self, suit=None, name=None):
         self.suit = suit
