@@ -162,12 +162,12 @@ class Deck:
 
         # check if card number input is valid
         if n_cards > len(self.cards):
-            return "Error: number of cards entered larger than deck"
+            raise Exception("Error: number of cards entered larger than deck")
         # return empty hand if n_cards is 0, error if less than 0
         elif n_cards == 0:
             return []
         elif n_cards < 0:
-            return "Error: number of cards entered less than 0"
+            raise Exception("Error: number of cards entered less than 0")
 
         # match deal_from input to output
         match deal_from:
@@ -256,24 +256,31 @@ class Deck:
                 return deal
             # any other deal_from option results in error
             case _:
-                return "Error: deal_from input invalid"
+                raise Exception("Error: deal_from input invalid")
 
 
 class Card:
     def __init__(self, suit=None, name=None):
-        self.suit = suit
-        self.name = name
-        # linked list elements
-        self.next = None
-        self.prev = None
+        self.suit = str(suit)
+        self.name = str(name)
+        # linked list elements - default to no links (next, prev = None)
+        self.next, self.prev = None, None
 
     def __str__(self):
         """Returns first letter of suit and value"""
+
+        # if either suit or name is None, return None string
+        if self.suit is None or self.name is None:
+            return str(None)
         return str(self.suit[0]) + str(self.name)
 
     def __eq__(self, other):
-        """Compares the suit/value of two cards"""
-        if self.name == other.value and self.suit == other.suit:
+        """
+        Compares the suit/value of two cards objects, returning True if both match
+        Comparison is case-independent
+        """
+
+        if self.name.lower() == other.name.lower() and self.suit.lower() == other.suit.lower():
             return True
         return False
 
@@ -282,17 +289,21 @@ class Card:
         return 1
 
     def set_prev(self, other):
-        """Sets previous card value for linked list"""
+        """Sets previous card value for linked list. Raises error if input is not Card or None"""
+        if type(other) is Card or other is None:
+            raise TypeError("Error: attempted to link an object that is not of class Card")
         self.prev = other
 
     def set_next(self, other):
-        """Sets next card value for linked list"""
+        """Sets next card value for linked list. Raises error if input is not Card or None"""
+        if type(other) is Card or other is None:
+            raise TypeError("Error: attempted to link an object that is not of class Card")
         self.next = other
 
     def set_suit(self, suit):
-        """Method for setting card suit"""
-        self.suit = suit
+        """Method for setting card suit - converts input to string"""
+        self.suit = str(suit)
 
     def set_name(self, name):
-        """Method for setting card value"""
-        self.name = name
+        """Method for setting card name - converts input to string"""
+        self.name = str(name)
