@@ -17,6 +17,11 @@ class Deck:
         # create deck
         self.build_deck()
 
+        if jokers == True:
+            # if true add one red, and one black joker to the deck 
+            self.add_jokers('red')
+            self.add_jokers('black')
+        
     def __str__(self):
         """Returns list with string representation of each card in deck"""
         # list comprehension using string value of each card in card container
@@ -258,6 +263,25 @@ class Deck:
             case _:
                 raise Exception("Error: deal_from input invalid")
 
+    def push(self, suit=str, name=str):
+        '''
+        Creates and appends a new card into the deck, can be used as a method to
+        'add' a card back into the deck
+        :param suit: string of the suit
+        :param name: strung of the name 
+        :return: no return, modifys the self.cards list
+        '''
+        card = Card(name, suit)
+        # create the card object
+        self.cards.append(card)
+        # appends the new card to the list
+
+    def add_jokers(self, color=str):
+        '''
+        Creates a joker of the users chosen color and appends it to the current deck
+        :return: no return, modifies self.cards list
+        '''
+        self.push('joker', color)
 
 class Card:
     def __init__(self, suit=None, name=None):
