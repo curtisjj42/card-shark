@@ -325,13 +325,13 @@ class Card:
 
     def set_prev(self, other):
         """Sets previous card value for linked list. Raises error if input is not Card or None"""
-        if type(other) is not Card or other is not None:
+        if type(other) is not Card and other is not None:
             raise TypeError("Error: attempted to link an object that is not of class Card")
         self.prev = other
 
     def set_next(self, other):
         """Sets next card value for linked list. Raises error if input is not Card or None"""
-        if type(other) is not Card or other is not None:
+        if type(other) is not Card and other is not None:
             raise TypeError("Error: attempted to link an object that is not of class Card")
         self.next = other
 
