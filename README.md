@@ -44,6 +44,6 @@ To use Card-Shark, you will need to have Python 3 installed on your machine. You
 
 
 ## Team
-- Jason Curtis | Github | LinkedIn
-- Alex Kramer | Github | LinkedIn
-- Zack Armand | Github | LinkedIn
+- Jason Curtis | Github
+- Alex Kramer | Github
+- Zack Armand | Github
