@@ -12,16 +12,16 @@ class Deck:
         self.bottom = None
         self.top = None
 
+        self.size = 0
         # list to hold all cards
         self.cards = []
         # create deck
         self.build_deck()
 
-        
     def __str__(self):
         """Returns list with string representation of each card in deck"""
         # list comprehension using string value of each card in card container
-        return str([each.__str__() for each in self.cards])
+        return " -> ".join([str(x) for x in self])
 
     def __len__(self):
         """Return length of internal list of cards"""
@@ -29,12 +29,15 @@ class Deck:
 
     def __iter__(self):
         """Returns iterable consisting of self-contained list of cards"""
-        return iter(self.cards)
+        card = self.top
+        while card is not None:
+            yield card.get_data()
+            card = card.get_next()
 
     def build_deck(self):
         """
         Constructs standard deck of cards with 52 cards and four suits
-        :return: None.
+        :return: None
         """
         # go through each suit
         for each in self.suits:
@@ -48,6 +51,7 @@ class Deck:
             for face in self.face_cards:
                 card = Card(each, face)
                 self.cards.append(card)
+        # constructs two jokers if requested
         if self.jokers is True:
             self.cards.append(Card('red', 'joker'))
             self.cards.append(Card('black', 'joker'))
@@ -86,18 +90,22 @@ class Deck:
         """
 
         i = 0
+        # randomize the order of indices in initial constructor array
         assignments = []
         while i < len(self.cards):
             rand = random.randint(0, len(self.cards) - 1)
             if rand not in assignments:
                 assignments.append(rand)
                 i += 1
+        # replace each index with its related card object
         for i in range(len(assignments)):
             assignments[i] = self.cards[assignments[i]]
+        # copy the shuffled array onto the initial storage
         self.cards = assignments
+        # reconstruct initial deck with shuffled version
         self.deck_storage()
 
-    def find(self, card=str):
+    def find(self, card):
         """
         Finds a specific card in the deck, returns its location (index)
         :parameter card: card you are finding
@@ -105,11 +113,14 @@ class Deck:
         """
 
         index = 0
-        for item in self.cards:
-            if card == item.__str__():
+        # index acts as our counter for where we are
+        node = self.top
+        while node is not None:
+            if node.__str__() == card:
                 return index
+            node = node.next
             index += 1
-        raise Exception
+        return index
 
     def pull(self, target):
         """
@@ -124,7 +135,34 @@ class Deck:
             if we remove {1}, we set: {2}.prev = {0} or index -1; {0}.next = {2} or index +1
         """
 
-        index = self.find(target)  # finds index of the card you want to pull
+        card = self.top
+        while target != card.__str__():
+            card = card.next
+        if card == self.top:
+            data = card.get_data()
+            new_top = card.next
+            new_top.prev = None
+            card = None
+            self.top = new_top
+            return data
+        elif card == self.bottom:
+            data = card.get_data()
+            new_bottom = card.prev
+            new_bottom.next = None
+            card = None
+            self.bottom = new_bottom
+            return data
+        else:
+            new_prev = card.prev
+            new_next = card.next
+            new_prev.next = new_next
+            new_next.prev = new_prev
+            card_data = card.get_data()
+            card = None
+            return card_data
+
+
+        """index = self.find(target)  # finds index of the card you want to pull
         if index == 0:
             # If we pull / del the card at index 0
             self.cards[index + 1].set_prev(len(self.cards))  # sets the card after to have .prev = last card in list
@@ -142,7 +180,7 @@ class Deck:
             # if we pull / del any card that is not in position 0 or in the last position in the list
             self.cards[index + 1].set_prev(self.cards[index - 1])  # sets .prev
             self.cards[index - 1].set_next(self.cards[index + 1])  # sets .next
-            self.cards.remove(self.cards[index])  # removes card
+            self.cards.remove(self.cards[index])  # removes card"""
 
     def pull_list(self, cards=list):
         """
@@ -288,9 +326,16 @@ class Deck:
         :param name: strung of the name
         :return: no return, modifies the self.cards list
         """
-        card = Card(name, suit)
+        new_card = Card(suit, name)
+        if self.bottom is None:
+            self.top = new_card
+            self.bottom = new_card
+        else:
+            new_card.prev = self.bottom
+            self.bottom.next = new_card
+            self.bottom = new_card
+        self.size += 1
         # create the card object
-        self.cards.append(card)
         # appends the new card to the list
 
 
@@ -325,13 +370,13 @@ class Card:
 
     def set_prev(self, other):
         """Sets previous card value for linked list. Raises error if input is not Card or None"""
-        if type(other) is not Card or other is not None:
+        if type(other) is not Card and other is not None:
             raise TypeError("Error: attempted to link an object that is not of class Card")
         self.prev = other
 
     def set_next(self, other):
         """Sets next card value for linked list. Raises error if input is not Card or None"""
-        if type(other) is not Card or other is not None:
+        if type(other) is not Card and other is not None:
             raise TypeError("Error: attempted to link an object that is not of class Card")
         self.next = other
 
@@ -342,3 +387,12 @@ class Card:
     def set_name(self, name):
         """Method for setting card name - converts input to string"""
         self.name = str(name)
+
+    def get_data(self):
+        return self.name, self.suit
+
+    def get_next(self):
+        return self.next
+
+    def get_prev(self):
+        return self.prev
