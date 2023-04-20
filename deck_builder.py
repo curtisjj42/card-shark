@@ -19,8 +19,8 @@ class Deck:
 
         if jokers == True:
             # if true add one red, and one black joker to the deck 
-            self.add_jokers('red')
-            self.add_jokers('black')
+            self.push('joker','red')
+            self.push('joker','black')
         
     def __str__(self):
         """Returns list with string representation of each card in deck"""
@@ -275,13 +275,6 @@ class Deck:
         # create the card object
         self.cards.append(card)
         # appends the new card to the list
-
-    def add_jokers(self, color=str):
-        '''
-        Creates a joker of the users chosen color and appends it to the current deck
-        :return: no return, modifies self.cards list
-        '''
-        self.push('joker', color)
 
 class Card:
     def __init__(self, suit=None, name=None):
