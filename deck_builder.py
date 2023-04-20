@@ -24,8 +24,8 @@ class Deck:
         return " -> ".join([str(x) for x in self])
 
     def __len__(self):
-        """Return length of internal list of cards"""
-        return len(self.cards)
+        """Return length of deck"""
+        return self.size
 
     def __iter__(self):
         """Returns iterable consisting of self-contained list of cards"""
@@ -39,24 +39,17 @@ class Deck:
         Constructs standard deck of cards with 52 cards and four suits
         :return: None
         """
-        # go through each suit
+
         for each in self.suits:
-            # go through cards 2-top spot (standard case is 10)
+            # top card
             for i in range(2, 11):
-                # create card
-                card = Card(each, i)
-                # add card to list of cards
-                self.cards.append(card)
-            # create jack, queen, king if needed - check if face cards is not None
+                self.push(each, i)
             for face in self.face_cards:
-                card = Card(each, face)
-                self.cards.append(card)
+                self.push(each, face)
         # constructs two jokers if requested
         if self.jokers is True:
-            self.cards.append(Card('red', 'joker'))
-            self.cards.append(Card('black', 'joker'))
-        # link cards in deck together
-        self.deck_storage()
+            self.push('red', 'joker')
+            self.push('black', 'joker')
 
     def deck_storage(self):
         """
