@@ -17,10 +17,6 @@ class Deck:
         # create deck
         self.build_deck()
 
-        if jokers == True:
-            # if true add one red, and one black joker to the deck 
-            self.push('joker','red')
-            self.push('joker','black')
         
     def __str__(self):
         """Returns list with string representation of each card in deck"""
@@ -52,6 +48,9 @@ class Deck:
             for face in self.face_cards:
                 card = Card(each, face)
                 self.cards.append(card)
+        if self.jokers is True:
+            self.cards.append(Card('red', 'joker'))
+            self.cards.append(Card('black', 'joker'))
         # link cards in deck together
         self.deck_storage()
 
@@ -65,14 +64,14 @@ class Deck:
         for i in range(len(self.cards)):
             # first card
             if i == 0:
-                # make first card bottom of deck
-                self.bottom = self.cards[i]
+                # make first card top of deck
+                self.top = self.cards[i]
                 self.cards[i].prev = None
                 self.cards[i].next = self.cards[i + 1]
             # last card
             elif i == len(self.cards) - 1:
-                # make last card top of deck
-                self.top = self.cards[i]
+                # make last card bottom of deck
+                self.bottom = self.cards[i]
                 self.cards[i].prev = self.cards[i - 1]
                 self.cards[i].next = None
             # rest of the cards
@@ -80,12 +79,30 @@ class Deck:
                 self.cards[i].prev = self.cards[i - 1]
                 self.cards[i].next = self.cards[i + 1]
 
+    def shuffle(self):
+        """
+        Shuffles cards to create a random distribution for game use
+        :return: None, reorganization is handled within the card objects
+        """
+
+        i = 0
+        assignments = []
+        while i < len(self.cards):
+            rand = random.randint(0, len(self.cards) - 1)
+            if rand not in assignments:
+                assignments.append(rand)
+                i += 1
+        for i in range(len(assignments)):
+            assignments[i] = self.cards[assignments[i]]
+        self.cards = assignments
+        self.deck_storage()
+
     def find(self, card=str):
-        '''
+        """
         Finds a specific card in the deck, returns its location (index)
         :parameter card: card you are finding
         :return: location as an index
-        '''
+        """
 
         index = 0
         for item in self.cards:
@@ -94,10 +111,10 @@ class Deck:
             index += 1
         raise Exception
 
-    def pull(self, pull):
-        '''
+    def pull(self, target):
+        """
         Removes one card from the deck at a time,
-        :param pull: card that is to be pulled out of the deck, removed
+        :param target: card that is to be pulled out of the deck, removed
         :return:No returns, mutates self.cards list and individual card's pointers within Card class
 
         Example for team to understand logic:
@@ -105,9 +122,9 @@ class Deck:
             if we remove {0}, we set: {1}.prev = {3} or index -1; {3}.next = {1} or index +1
             if we remove {3}, we set: {0}.prev = {2} or index -1; {2}.next = {0} or 0
             if we remove {1}, we set: {2}.prev = {0} or index -1; {0}.next = {2} or index +1
-        '''
+        """
 
-        index = self.find(pull)  # finds index of the card you want to pull
+        index = self.find(target)  # finds index of the card you want to pull
         if index == 0:
             # If we pull / del the card at index 0
             self.cards[index + 1].set_prev(len(self.cards))  # sets the card after to have .prev = last card in list
@@ -128,25 +145,25 @@ class Deck:
             self.cards.remove(self.cards[index])  # removes card
 
     def pull_list(self, cards=list):
-        '''
+        """
         Pulls / removes a list of cards from the deck
         :parameter cards: a list of strings
         :return: mutates list
-        '''
+        """
         for card in cards:
             self.pull(card.lower())
 
     def cut(self):
-        '''
+        """
         Cuts deck in half, and
-        :return: updates the currect deck
-        '''
+        :return: updates the correct deck
+        """
         cut_index = len(self.cards) // 2
         # where the cut is taking place
         cut_deck = []  # temporary list to store new order
         for i in range(cut_index, len(self.cards)):  # for each item from the cut down,
             cut_deck.append(self.cards[i])  # append it to the front of the new list
-        for i in range(0, cut_index):  # for each item from the cut up (what you move to the botton of the deck),
+        for i in range(0, cut_index):  # for each item from the cut up (what you move to the bottom of the deck),
             cut_deck.append(self.cards[i])  # add it to the new list
         self.cards = cut_deck
 
@@ -264,17 +281,18 @@ class Deck:
                 raise Exception("Error: deal_from input invalid")
 
     def push(self, suit=str, name=str):
-        '''
+        """
         Creates and appends a new card into the deck, can be used as a method to
         'add' a card back into the deck
         :param suit: string of the suit
-        :param name: strung of the name 
-        :return: no return, modifys the self.cards list
-        '''
+        :param name: strung of the name
+        :return: no return, modifies the self.cards list
+        """
         card = Card(name, suit)
         # create the card object
         self.cards.append(card)
         # appends the new card to the list
+
 
 class Card:
     def __init__(self, suit=None, name=None):
