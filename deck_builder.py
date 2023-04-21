@@ -51,31 +51,6 @@ class Deck:
             self.push('red', 'joker')
             self.push('black', 'joker')
 
-    """def deck_storage(self):
-        
-        Iterates through internal cardholder list, linked each card sequentially
-        :return: None
-        
-
-        # loop through each card in deck
-        for i in range(len(self.cards)):
-            # first card
-            if i == 0:
-                # make first card top of deck
-                self.top = self.cards[i]
-                self.cards[i].prev = None
-                self.cards[i].next = self.cards[i + 1]
-            # last card
-            elif i == len(self.cards) - 1:
-                # make last card bottom of deck
-                self.bottom = self.cards[i]
-                self.cards[i].prev = self.cards[i - 1]
-                self.cards[i].next = None
-            # rest of the cards
-            else:
-                self.cards[i].prev = self.cards[i - 1]
-                self.cards[i].next = self.cards[i + 1]"""
-
     def shuffle(self):
         """
         Shuffles cards to create a random distribution for game use
@@ -179,14 +154,22 @@ class Deck:
         Cuts deck in half, and
         :return: updates the correct deck
         """
-        cut_index = len(self.cards) // 2
-        # where the cut is taking place
-        cut_deck = []  # temporary list to store new order
-        for i in range(cut_index, len(self.cards)):  # for each item from the cut down,
-            cut_deck.append(self.cards[i])  # append it to the front of the new list
-        for i in range(0, cut_index):  # for each item from the cut up (what you move to the bottom of the deck),
-            cut_deck.append(self.cards[i])  # add it to the new list
-        self.cards = cut_deck
+        cut_index = self.size // 2  # where the cut is taking place
+        i = 0
+        new_top = self.top  # loop to locate new deck top
+        while i < cut_index:
+            new_top = new_top.get_next()
+            i += 1
+        # bottom of the deck is the previous card
+        new_bottom = new_top.get_prev()
+        # top and bottom cards are now in the middle and linked
+        self.bottom.set_next(self.top)
+        self.top.set_prev(self.bottom)
+        # set new top and bottom cards
+        self.top = new_top
+        new_top.set_prev(None)
+        self.bottom = new_bottom
+        new_bottom.set_next(None)
 
     def deal(self, deal_from="Top", n_cards=1):
         """
