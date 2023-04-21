@@ -11,7 +11,7 @@ class Deck:
         # top and bottom of deck, occupied by a card
         self.bottom = None
         self.top = None
-
+        # initialize deck size counter
         self.size = 0
         # list to hold all cards
         self.cards = []
@@ -41,9 +41,9 @@ class Deck:
         """
 
         for each in self.suits:
-            # top card
+            # top card is the 2 of hearts
             for i in range(2, 11):
-                self.push(each, i)
+                self.push(each, f"{i}")
             for face in self.face_cards:
                 self.push(each, face)
         # constructs two jokers if requested
@@ -51,11 +51,11 @@ class Deck:
             self.push('red', 'joker')
             self.push('black', 'joker')
 
-    def deck_storage(self):
-        """
+    """def deck_storage(self):
+        
         Iterates through internal cardholder list, linked each card sequentially
         :return: None
-        """
+        
 
         # loop through each card in deck
         for i in range(len(self.cards)):
@@ -74,7 +74,7 @@ class Deck:
             # rest of the cards
             else:
                 self.cards[i].prev = self.cards[i - 1]
-                self.cards[i].next = self.cards[i + 1]
+                self.cards[i].next = self.cards[i + 1]"""
 
     def shuffle(self):
         """
@@ -85,97 +85,87 @@ class Deck:
         i = 0
         # randomize the order of indices in initial constructor array
         assignments = []
-        while i < len(self.cards):
-            rand = random.randint(0, len(self.cards) - 1)
+        while i < self.size:
+            rand = random.randint(0, self.size - 1)
             if rand not in assignments:
                 assignments.append(rand)
                 i += 1
-        # replace each index with its related card object
-        for i in range(len(assignments)):
-            assignments[i] = self.cards[assignments[i]]
-        # copy the shuffled array onto the initial storage
-        self.cards = assignments
-        # reconstruct initial deck with shuffled version
-        self.deck_storage()
+        shuffled_order = [0 for _ in range(len(assignments))]
+        card = self.top
+        i = 0
+        while card is not None:
+            shuffled_order[assignments[i]] = card
+            card = card.get_next()
+            i += 1
+        for j in range(len(shuffled_order)):
+            if j == 0:
+                self.top = shuffled_order[0]
+                shuffled_order[0].set_prev(None)
+                shuffled_order[0].set_next(shuffled_order[1])
+            elif j == len(shuffled_order) - 1:
+                self.bottom = shuffled_order[j]
+                shuffled_order[j].set_next(None)
+                shuffled_order[j].set_prev(shuffled_order[j-1])
+            else:
+                shuffled_order[j].set_prev(shuffled_order[j-1])
+                shuffled_order[j].set_next(shuffled_order[j+1])
 
-    def find(self, card):
+    def find(self, target):
         """
         Finds a specific card in the deck, returns its location (index)
-        :parameter card: card you are finding
+        :parameter target: card you are finding
         :return: location as an index
         """
 
         index = 0
         # index acts as our counter for where we are
-        node = self.top
-        while node is not None:
-            if node.__str__() == card:
+        card = self.top
+        while card is not None:
+            if card.__str__() == target:
                 return index
-            node = node.next
+            card = card.next
             index += 1
-        return index
+        return "Target card is not in this deck"
 
     def pull(self, target):
         """
         Removes one card from the deck at a time,
-        :param target: card that is to be pulled out of the deck, removed
-        :return:No returns, mutates self.cards list and individual card's pointers within Card class
-
-        Example for team to understand logic:
-            {0} -> {1} -> {2} -> {3}
-            if we remove {0}, we set: {1}.prev = {3} or index -1; {3}.next = {1} or index +1
-            if we remove {3}, we set: {0}.prev = {2} or index -1; {2}.next = {0} or 0
-            if we remove {1}, we set: {2}.prev = {0} or index -1; {0}.next = {2} or index +1
+        :param target: card (ex. 'h2') that is to be pulled out of the deck, removed
+        :return: No returns, mutates deck in place
         """
 
-        card = self.top
+        card = self.top  # initialize with top card for iteration
+        # iterate through the deck to reach the desired card
         while target != card.__str__():
-            card = card.next
-        if card == self.top:
-            data = card.get_data()
-            new_top = card.next
-            new_top.prev = None
-            card = None
+            card = card.get_next()
+
+        if card == self.top:  # case 1: target is the top card
+            data = card.get_data()  # preserve data during object deletion
+            new_top = card.get_next()  # reset top card to next object
+            new_top.set_prev(None)
+            card = None  # delete pulled object
+            self.size -= 1  # deck size reflects removed card
             self.top = new_top
             return data
-        elif card == self.bottom:
+        elif card == self.bottom:  # case 2: target is the bottom card
             data = card.get_data()
-            new_bottom = card.prev
-            new_bottom.next = None
+            new_bottom = card.get_prev()  # reset bottom card to previous object
+            new_bottom.set_next(None)
             card = None
+            self.size -= 1
             self.bottom = new_bottom
             return data
-        else:
-            new_prev = card.prev
-            new_next = card.next
-            new_prev.next = new_next
-            new_next.prev = new_prev
-            card_data = card.get_data()
+        else:                   # case 3: target is anywhere else in the deck
+            data = card.get_data()
+            new_prev = card.get_prev()  # link surrounding cards to each other
+            new_next = card.get_next()
+            new_prev.set_next(new_next)
+            new_next.set_prev(new_prev)
             card = None
-            return card_data
+            self.size -=1
+            return data
 
-
-        """index = self.find(target)  # finds index of the card you want to pull
-        if index == 0:
-            # If we pull / del the card at index 0
-            self.cards[index + 1].set_prev(len(self.cards))  # sets the card after to have .prev = last card in list
-            self.cards[len(self.cards) - 1].set_next(
-                self.cards[index + 1])  # sets the card before to have .next = next card
-            self.cards.remove(self.cards[index])  # removes card
-
-        elif index == (len(self.cards) - 1):
-            # If we pull/ del the last card in the list
-            self.cards[0].set_prev(self.cards[index - 1])  # sets card[0] to .prev = last in list
-            self.cards[index - 1].set_next(self.cards[0])  # sets new last card to .next = first in list
-            self.cards.remove(self.cards[index])  # removes card
-
-        else:
-            # if we pull / del any card that is not in position 0 or in the last position in the list
-            self.cards[index + 1].set_prev(self.cards[index - 1])  # sets .prev
-            self.cards[index - 1].set_next(self.cards[index + 1])  # sets .next
-            self.cards.remove(self.cards[index])  # removes card"""
-
-    def pull_list(self, cards=list):
+    def pull_list(self, cards: list):
         """
         Pulls / removes a list of cards from the deck
         :parameter cards: a list of strings
@@ -311,13 +301,13 @@ class Deck:
             case _:
                 raise Exception("Error: deal_from input invalid")
 
-    def push(self, suit=str, name=str):
+    def push(self, suit: str, name: str):
         """
         Creates and appends a new card into the deck, can be used as a method to
         'add' a card back into the deck
         :param suit: string of the suit
         :param name: strung of the name
-        :return: no return, modifies the self.cards list
+        :return: no return, modifies the deck (linked list)
         """
         new_card = Card(suit, name)
         if self.bottom is None:
@@ -367,11 +357,19 @@ class Card:
             raise TypeError("Error: attempted to link an object that is not of class Card")
         self.prev = other
 
+    def get_prev(self):
+        """Getter method for previous card object in linked list"""
+        return self.prev
+
     def set_next(self, other):
         """Sets next card value for linked list. Raises error if input is not Card or None"""
         if type(other) is not Card and other is not None:
             raise TypeError("Error: attempted to link an object that is not of class Card")
         self.next = other
+
+    def get_next(self):
+        """Getter method for next card object in linked list"""
+        return self.next
 
     def set_suit(self, suit):
         """Method for setting card suit - converts input to string"""
@@ -382,10 +380,8 @@ class Card:
         self.name = str(name)
 
     def get_data(self):
+        """Returns card data as a tuple"""
         return self.name, self.suit
 
-    def get_next(self):
-        return self.next
 
-    def get_prev(self):
-        return self.prev
+
