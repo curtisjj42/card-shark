@@ -31,16 +31,16 @@ class test_Card(unittest.TestCase):
 
     def create_card(self):
         """Test the creation of a new Card object with valid and invalid input"""
-        # create two new cards, one with data and one without
+        # create card with full data
         card = db.Card('hearts', 8)
-        card2 = db.Card()
         # create card2 with no suit, but a name
         card2 = db.Card(None, 'king')
         # test equality of new card
         self.assertEqual(card.get_data(), ('8', 'Hearts'))
         # test length
         self.assertEqual(len(card), 1)
-        self.assertEqual(len(card), len(card2))  # card with no data should be length 1
+        self.assertEqual(len(card), len(card2))  # card with incomplete data should be length 1
+        self.assertEqual(len(card), len(db.Card()))  # card with no data should still be length 1
 
         # test creating card with invalid input
         with self.assertRaises(TypeError):
@@ -167,7 +167,7 @@ class test_Deck(unittest.TestCase):
             self.assertNotEqual(card, bottom)
 
         # pull any other card - if passed, should return tuple with card data
-        self.assertEqual(deck.pull('h8'), ('8','hearts'))
+        self.assertEqual(deck.pull('h8'), ('8', 'hearts'))
 
         # pull a card that doesn't exist
         self.assertEqual(deck.pull('x11'), "Target card is not in this deck")
@@ -292,5 +292,3 @@ class test_Deck(unittest.TestCase):
             deck1.push(each[1], each[0])
         # check that the length of two decks match
         self.assertEqual(len(deck1), 104)
-
-
