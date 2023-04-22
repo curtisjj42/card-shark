@@ -323,6 +323,9 @@ class Deck:
 
 class Card:
     def __init__(self, suit=None, name=None):
+        # reject suit input if not string or None
+        if (suit is not None) and (type(suit) is not str):
+            raise TypeError("Suit input must be string or None")
         self.suit = str(suit)
         self.name = str(name)
         # linked list elements - default to no links (next, prev = None)
@@ -381,4 +384,3 @@ class Card:
     def get_data(self):
         """Returns card data as a tuple"""
         return self.name, self.suit
-

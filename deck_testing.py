@@ -4,24 +4,25 @@ import unittest
 
 class test_Card(unittest.TestCase):
     def test_blank_card(self):
+        """Test Card class by creating a blank card. Make sure data is equal to None"""
         card = db.Card()
-        self.assertEqual(card.get_data(), ('None', 'None'))
+        self.assertEqual(card.get_data(), ('None', 'None'))  # make sure to format test data correctly ('name', 'suit')
 
     def test_update_attributes(self):
+        """Test updating the attributes of a Card object. Assert equality or linkage of two cards accordingly"""
         # create blank card
         card = db.Card()
         # update suit, value
         card.set_suit('spade')
         card.set_name('ace')
-
+        # test suit and value against known value tuple
         self.assertEqual(card.get_data(), ('ace', 'spade'))
 
         # create a new card
         card2 = db.Card('hearts', '8')
-
+        # link two cards to each other sequentially
         card.set_next(card2)
         card2.set_prev(card)
-
         # check all next and prev
         self.assertEqual(card.get_next(), card2)
         self.assertEqual(card2.get_prev(), card)
@@ -29,26 +30,38 @@ class test_Card(unittest.TestCase):
         self.assertEqual(card2.get_next(), None)
 
     def create_card(self):
+        """Test the creation of a new Card object with valid and invalid input"""
+        # create two new cards, one with data and one without
         card = db.Card('hearts', 8)
         card2 = db.Card()
-
+        # create card2 with no suit, but a name
+        card2 = db.Card(None, 'king')
+        # test equality of new card
         self.assertEqual(card.get_data(), ('8', 'Hearts'))
         # test length
         self.assertEqual(len(card), 1)
-        self.assertNotEqual(len(card), len(card2))
+        self.assertEqual(len(card), len(card2))  # card with no data should be length 1
+
+        # test creating card with invalid input
+        with self.assertRaises(TypeError):
+            card = db.Card(['hearts'], 100)
 
     def test_equality(self):
+        """Test the equality two cards, which is when their suit and name are the same"""
+        # create two cards
         card = db.Card('clubs', '3')
         card2 = db.Card()
+        # update card two from blank card
         card2.set_name(3)
         card2.set_suit('CLUBS')
-
+        # test equality
         self.assertEqual(card, card2)
 
 
 class test_Deck(unittest.TestCase):
 
     def test_build_deck(self):
+        """Test building a deck, with and without jokers"""
 
         # create a deck
         deck = db.Deck()
@@ -61,8 +74,12 @@ class test_Deck(unittest.TestCase):
         deck.find('bjoker')
         deck.find('rjoker')
 
-    def test_equal(self):
-
+    def test_dunder(self):
+        """
+        Test that equality, iter, and length dunder methods operate successfully
+        Two decks are considered equal if they have the same exact cards in the same order
+        Length is the number of cards in a deck
+        """
         # create a deck
         deck = db.Deck()
         # full deck length test
@@ -110,7 +127,8 @@ class test_Deck(unittest.TestCase):
         self.assertNotEqual(deck1, deck2)
 
     def test_find(self):
-
+        """Test find method. Find method is mostly intended for internal use in pull method."""
+        # create deck
         deck = db.Deck()
 
         # try to find a known card at top of deck
@@ -134,7 +152,7 @@ class test_Deck(unittest.TestCase):
         top = deck.top
         top = top.__str__()
         deck.pull(top)
-        # check that top card is no longer in deck
+        # check that top card is no longer in deck by checking all cards in deck
         for each in deck:
             card = db.Card(each[1], each[0]).__str__()
             self.assertNotEqual(card, top)
@@ -148,14 +166,11 @@ class test_Deck(unittest.TestCase):
             card = db.Card(each[1], each[0]).__str__()
             self.assertNotEqual(card, bottom)
 
-        # pull any other card
-        card = db.Card('hearts', 8)
-        deck.pull(card.__str__())
+        # pull any other card - if passed, should return tuple with card data
+        self.assertEqual(deck.pull('h8'), ('8','hearts'))
 
         # pull a card that doesn't exist
-        card = db.Card('suit', 11)
-        card_pull = card.__str__()
-        self.assertEqual(deck.pull(card_pull), "Target card is not in this deck")
+        self.assertEqual(deck.pull('x11'), "Target card is not in this deck")
 
         # pull a card again after trying to pull once
         pulled_card = deck.pull('hace')
@@ -169,20 +184,19 @@ class test_Deck(unittest.TestCase):
             deck.pull()
 
     def test_pull_list(self):
-
+        """Testing pulling a list from the deck. Most common use case is pulling out a certain suit."""
+        # create deck
         deck = db.Deck()
-
+        # create list with every card in hearts suit in a standard deck
         pull_list = ['h'] * 13
         cards = []
         for each in range(2, 11):
             cards.append(each)
         for each in ['jack', 'queen', 'king', 'ace']:
             cards.append(each)
-
         for i in range(len(pull_list)):
             pull_list[i] = pull_list[i] + str(cards[i])
-
-        # store top card for later
+        # store top card for later testing
         old_top = deck.top
 
         # pull all hearts
@@ -192,23 +206,23 @@ class test_Deck(unittest.TestCase):
         self.assertEqual(deck.find('h3'), "Target card is not in this deck")
         self.assertEqual(deck.find('hking'), "Target card is not in this deck")
         self.assertEqual(deck.pull('h8'), "Target card is not in this deck")
-        # check that length is 13 fewer
+        # check that length is 13 fewer than standard
         self.assertEqual(len(deck), 39)
-
         # check that top card changed
         self.assertNotEqual(deck.top, old_top)
 
     def test_cut(self):
+        """Test using the cut function on the deck. Decks should be cut consistently, and attributes updated"""
 
         # create two decks to compare
         deck1 = db.Deck()
         deck2 = db.Deck()
 
-        # cut deck2 and compare to original deck
+        # cut deck2 and compare to original deck that they are not equal
         deck2.cut()
         self.assertNotEqual(deck1, deck2)
 
-        # cut other deck again to compare consistency
+        # cut other deck again to compare consistency in cut function
         deck1.cut()
         self.assertEqual(deck1, deck2)
 
@@ -231,10 +245,10 @@ class test_Deck(unittest.TestCase):
         # UPDATE WHEN DEAL IS READY
 
     def test_push_card(self):
+        """Push function pushes a card into the deck. Push takes card name and suit, but not a card object"""
 
         # create a new deck
         deck = db.Deck()
-
         # push a new card, a joker
         deck.push('black', 'joker')
         i = deck.find('bjoker')
@@ -257,16 +271,26 @@ class test_Deck(unittest.TestCase):
 
         # can even push a none card to the deck
         deck.push(None, None)
+        self.assertEqual(len(deck), 53)
+
+        # try to push a card object to the deck, which should fail
+        card = db.Card('hearts', 55)  # for sake of finding later, use card that doesn't exist in standard deck
+        with self.assertRaises(TypeError):
+            deck.push(card)
+        # but should pass if you pull attributes.
+        deck.push(card.suit, card.name)
+        # should return an integer, meaning card is in the deck
+        self.assertIsInstance(deck.find('h55'), int)
 
     def test_push_deck(self):
-        """Try to push a deck into another deck"""
-
+        """Testing pushing a deck into another deck"""
+        # create two decks
         deck1 = db.Deck()
         deck2 = db.Deck()
         # loop through push
         for each in deck2:
             deck1.push(each[1], each[0])
-        # check that it's the length of two decks
+        # check that the length of two decks match
         self.assertEqual(len(deck1), 104)
 
 
