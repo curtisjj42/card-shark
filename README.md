@@ -59,6 +59,18 @@ print(deck.find('sace'))
 print(f"Unshuffled deck: {deck}")
 deck.shuffle()
 print(f"Shuffled deck: {deck}")
+
+# create two decks
+deck1 = Deck()
+deck2 = Deck()
+
+# push each card in deck2 into deck1 with loop
+for each in deck2:
+    deck1.push(each[1], each[0])
+
+# print new deck1
+print(deck1)
+print(f"Length of deck1 is: {len(deck1)}")
 ```
 
 
