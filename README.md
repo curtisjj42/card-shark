@@ -34,6 +34,32 @@ Card-Shark was created as a final project for [Introduction to Programming for D
 To use Card-Shark, you will need to have Python 3 installed on your machine. You can then install this package... # how do we have people install this package?
 
 ## Examples
+```python
+import card-shark
+
+# create a deck
+deck = Deck()
+
+# print the top card
+print(f"Top card is: {deck.top}")
+
+# pull top card
+pulled_card = deck.pull('h2')
+print(f"Top card is: {deck.top}")
+print(f"Pulled card is: {pulled_card}")
+
+# pull two cards at once
+deck.pull_list(['h8', 'sace'])
+
+# try to find the ace of spades now
+print("Trying to find ace of spades after pulling it from deck:")
+print(deck.find('sace'))
+
+# shuffle deck
+print(f"Unshuffled deck: {deck}")
+deck.shuffle()
+print(f"Shuffled deck: {deck}")
+```
 
 
 ## Testing
