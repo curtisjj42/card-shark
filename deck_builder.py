@@ -28,11 +28,23 @@ class Deck:
         return self.size
 
     def __iter__(self):
-        """Returns iterable consisting of self-contained list of cards"""
+        """Returns n-tuples containing name and suit of each card in deck of length n"""
         card = self.top
         while card is not None:
             yield card.get_data()
             card = card.get_next()
+
+    def __eq__(self, other):
+        """Two decks are equal if they contain the same exact cards in the same order"""
+        if type(other) is Deck and len(self) == len(other):
+            for each, other_each in zip(self, other):
+                # catch any instance of cards not equaling in order
+                if each != other_each:
+                    return False
+            # if all cards match, then decks equal
+            return True
+        # if other is not Deck class or length if different from self
+        return False
 
     def build_deck(self):
         """
@@ -87,9 +99,9 @@ class Deck:
 
     def find(self, target):
         """
-        Finds a specific card in the deck, returns its location (index)
+        Finds a specific card in the deck, returns location of first instance (index)
         :parameter target: card you are finding
-        :return: location as an index
+        :return: location as an index of first instance of card in deck
         """
 
         index = 0
@@ -112,7 +124,11 @@ class Deck:
         card = self.top  # initialize with top card for iteration
         # iterate through the deck to reach the desired card
         while target != card.__str__():
-            card = card.get_next()
+            try:
+                card = card.get_next()
+            except AttributeError:
+                # card not found, return error message
+                return "Target card is not in this deck"
 
         if card == self.top:  # case 1: target is the top card
             data = card.get_data()  # preserve data during object deletion
@@ -292,7 +308,7 @@ class Deck:
         :param name: strung of the name
         :return: no return, modifies the deck (linked list)
         """
-        new_card = Card(suit, name)
+        new_card = Card(suit, str(name))
         if self.bottom is None:
             self.top = new_card
             self.bottom = new_card
@@ -365,6 +381,4 @@ class Card:
     def get_data(self):
         """Returns card data as a tuple"""
         return self.name, self.suit
-
-
 
