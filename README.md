@@ -37,11 +37,21 @@ To use Card-Shark, you will need to have Python 3 installed on your machine. You
 
 
 ## Testing
+Unit testing is performed in the deck_testing.py file. This file runs tests on both the Card and Deck classes, including most methods. 
 
+Some notable considerations when performing unit testing:
+- Card: Card objects should be constructed with only a string or None type suit, and any name input. Card objects can only be linked (previous or next) to another instance of a Card object, or to None. 
+- Deck: Deck.push(), Deck.pull(). Deck.pull_list(), and Deck.find() all take a string representation of a card as input. A Card object cannot be directly passed into these methods. If a card has a suit of hearts and value of 8, then you must pass 'h8' into these methods to interacte with this card. Additionally, you cannot pass a tuple representing the card data into these methods, such as ('8', 'hearts') for the previous example. 
+- Testing shuffle by comparing it against a default deck is a good way to test if the deck was shuffled, and this can be done multiple times. However, there is an extremely minute chance that shuffling a deck with result in the same order as the original deck. This is an issue with the inherent value of true randomness used in the shuffle. 
 
 ## Sources
+Only two external packages were used in this package: 
+- [Random][rand]. Used to facilitate a truly random shuffle of the deck.
+- [Unittest][unit]. Used in deck_testing.py unit testing module.
 
 
+[rand]: https://github.com/python/cpython/blob/3.11/Lib/random.py
+[unit]: https://docs.python.org/3/library/unittest.html#module-unittest
 
 ## Team
 - Jason Curtis | Github
