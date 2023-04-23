@@ -2,20 +2,19 @@
 Card-Shark is a simple deck constructor made in Python 3.1
 ##### Project Status: Last Updated April 2023
 # Table of Contents
-- Overview
-- Features
-- Technologies
-- Setup
-- Examples
-- Testing
-- Sources
-- Team
+- [Overview](#overview)
+- [Features](#features)
+- [Technologies](#technologies)
+- [Setup](#setup)
+- [Examples](#examples)
+- [Testing](#testing)
+- [Sources](#sources)
+- [Team](#team)
 
 ## Overview
 Card-Shark is a simple deck constructor Python package that allows developers to easily create and manage decks and cards without having to worry about basic functions. This package will allow you to focus on implmenting game-specific rules and mechanics.
 
 Card-Shark was created as a final project for [Introduction to Programming for Data Science](https://kuwisdelu.github.io/ds5010-spring23.html) course at Northeastern taught by Kylie Bemis. Throughout creating this package we learned to implement class concepts such as linked lists, testing, github and overall coding collaboration. 
-
 
 
 ## Features
@@ -92,6 +91,6 @@ Only two external packages were used in this package:
 [unit]: https://docs.python.org/3/library/unittest.html#module-unittest
 
 ## Team
-- Jason Curtis | Github
-- Alex Kramer | Github
-- Zack Armand | Github
+- Jason Curtis | [Github](https://github.com/curtisjj42)
+- Alex Kramer | [Github](https://github.com/Alex-Kramer0)
+- Zack Armand | [Github](https://github.com/ZacharyArmandNEU)
