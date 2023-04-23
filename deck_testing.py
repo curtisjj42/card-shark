@@ -241,8 +241,64 @@ class test_Deck(unittest.TestCase):
         self.assertEqual(deck.bottom.get_next(), None)
 
     def test_deal(self):
-        pass
-        # UPDATE WHEN DEAL IS READY
+        """Test deal function by trying to """
+
+        # create a new deck
+        deck = db.Deck()
+
+        # deal 1 card to 1 player - will be top of deck
+        top_card = deck.top
+        dealt_card = deck.deal(1, 1)
+        self.assertEqual(top_card.get_data(), dealt_card[0][0])
+
+        # deal one card to two players
+        top_card = deck.top
+        next_top_card = deck.top.next
+        hand = deck.deal(2, 1)
+        # compare hands
+        self.assertEqual(top_card.get_data(), hand[0][0])
+        self.assertEqual(next_top_card.get_data(), hand[1][0])
+
+        # deal two cards to one player
+        top_card = deck.top
+        next_top_card = deck.top.next
+        hand = deck.deal(1, 2)
+        # compare cards in hand
+        self.assertEqual(top_card.get_data(), hand[0][0])
+        self.assertEqual(next_top_card.get_data(), hand[0][1])
+
+        # deal one card, check that length is now 51
+        deck = db.Deck()
+        deck.deal(1, 1)
+        self.assertEqual(len(deck), 51)
+
+        # deal empty hand
+        self.assertEqual(deck.deal(0,0), [])
+
+        # try to deal too many cards
+        with self.assertRaises(Exception):
+            deck.deal(1, 100)
+
+        # try to deal less than 0 cards
+        with self.assertRaises(Exception):
+            deck.deal(1, -1)
+
+    def test_draw(self):
+        """Test drawing function, which draws top card from deck"""
+        # create deck
+        deck = db.Deck()
+
+        # draw top card
+        top_card = deck.top
+        drawn_card = deck.draw()
+        # compare and make sure top card was drawn
+        self.assertEqual(drawn_card, top_card.get_data())
+        self.assertEqual(len(deck), 51)
+        # make sure top card was updated
+        self.assertNotEqual(deck.top.get_data(), drawn_card)
+        self.assertEqual(deck.top.get_prev(), None)
+        # make sure drawn card is not Card class
+        self.assertNotEqual(type(drawn_card), db.Card)
 
     def test_push_card(self):
         """Push function pushes a card into the deck. Push takes card name and suit, but not a card object"""
