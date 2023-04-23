@@ -30,7 +30,7 @@ Card-Shark was created as a final project for [Introduction to Programming for D
 - Python 3.1
 
 ## Setup
-To use Card-Shark, you will need to have Python 3 installed on your machine. You can then install this package... # how do we have people install this package?
+
 
 ## Examples
 ```python
