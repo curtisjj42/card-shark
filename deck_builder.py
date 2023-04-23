@@ -13,8 +13,6 @@ class Deck:
         self.top = None
         # initialize deck size counter
         self.size = 0
-        # list to hold all cards
-        self.cards = []
         # create deck
         self.build_deck()
 
@@ -187,118 +185,61 @@ class Deck:
         self.bottom = new_bottom
         new_bottom.set_next(None)
 
-    def deal(self, deal_from="Top", n_cards=1):
+    def deal(self, players: int, cards: int):
         """
         Deals a deck of cards of n_cards length to user
-        :param deal_from: where to deal cards from in deck
-            Options include top, bottom, middle, random
-            Defaults to dealing from top of deck
-        :param n_cards: number of cards to deal. Defaults to one card
-        :return: a hand of cards (list) of length n_cards
+        :param players: number of players to deal to. Default of 1
+        :param cards: number of cards to deal to each player. Default of 1
+        :return: nested list containing all hands dealt
         """
 
-        # lowercase deal_from string for input consistency
-        deal_from = deal_from.lower()
-        # get length of deck from self.cards
-        n = len(self.cards)
-
         # check if card number input is valid
-        if n_cards > len(self.cards):
+        if cards > self.size:
             raise Exception("Error: number of cards entered larger than deck")
         # return empty hand if n_cards is 0, error if less than 0
-        elif n_cards == 0:
+        elif cards == 0:
             return []
-        elif n_cards < 0:
+        elif cards < 0:
             raise Exception("Error: number of cards entered less than 0")
 
-        # match deal_from input to output
-        match deal_from:
-            case "top":
-                deal = []
-                # iterate through list starting from top
-                for i in range(1, n_cards + 1):
-                    dealt_card = self.cards.pop(n - i)
-                    # remove prev, next attributes as card outside of deck
-                    dealt_card.next, dealt_card.prev = None, None
-                    # add card to dealt hand
-                    deal.append(dealt_card)
-                # reassign top card
-                if n_cards == n:
-                    self.top, self.bottom = None, None
-                else:
-                    self.top = self.cards[n - n_cards - 1]
-                    self.top.set_next(None)
-                return deal
-            case "bottom":
-                deal = []
-                for i in range(n_cards):
-                    # remove card from bottom of deck
-                    dealt_card = self.cards.pop(0)
-                    # remove prev, next attributes as card outside of deck
-                    dealt_card.next, dealt_card.prev = None, None
-                    # add card to dealt hand
-                    deal.append(dealt_card)
-                # reassign bottom card
-                if n_cards == n:
-                    self.top, self.bottom = None, None
-                else:
-                    self.bottom = self.cards[0]
-                    self.bottom.set_prev(None)
-                return deal
-            case "middle":
-                # empty list to hold deal
-                deal = []
-                for i in range(n_cards):
-                    mid = n // 2
-                    # remove card from middle of deck
-                    dealt_card = self.cards.pop(mid)
-                    # remove prev, next attributes as card outside of deck
-                    dealt_card.next, dealt_card.prev = None, None
-                    # add card to dealt hand
-                    deal.append(dealt_card)
-                    # reduce stored length of deck
-                    n -= 1
-                # reassign top, bottom, internal structure as needed
-                if n == 0:
-                    self.top, self.bottom = None, None
-                elif n == 1:
-                    self.bottom, self.top = self.cards[0], self.cards[0]
-                    self.bottom.set_prev(None)
-                    self.bottom.set_next(None)
-                else:
-                    self.deck_storage()
-                return deal
-            case "random":
-                # if dealing size of deck, return deck, but shuffled
-                if n_cards == n:
-                    deal = self.cards.copy()
-                    random.shuffle(deal)
-                    return deal
-                deal = []
-                i = 0
-                # iterate through number of cards to deal
-                while i < n_cards:
-                    # choose random number between 1 and length of deck
-                    m = random.randrange(1, n)
-                    dealt_card = self.cards.pop(m)
-                    # remove prev, next attributes as card outside of deck
-                    dealt_card.next, dealt_card.prev = None, None
-                    # add card to dealt hand
-                    deal.append(dealt_card)
-                    # update iterators
-                    i += 1
-                    n -= 1
-                # reassign cards and list structure
-                if n == 1:
-                    self.top, self.bottom = self.cards[0], self.cards[0]
-                    self.bottom.set_prev(None)
-                    self.bottom.set_next(None)
-                else:
-                    self.deck_storage()
-                return deal
-            # any other deal_from option results in error
-            case _:
-                raise Exception("Error: deal_from input invalid")
+        # initialize hands based on number of declared players
+        hands = [[] for _ in range(players)]
+        # nested loop to deal cards in the correct order
+        for i in range(cards):
+            for j in range(players):
+                # appends card data as a tuple to each player in order
+                hands[j].append(self.top.get_data())
+                # declare and set next top card
+                next_card = self.top.get_next()
+                self.top = None
+                self.top = next_card
+                # maintain accurate deck size
+                self.size -= 1
+        return hands
+
+    def draw(self):
+        """
+        Draws the top card from the deck
+        :return: card data from the top card
+        """
+
+        # check if deck is empty
+        if self.size == 0:
+            raise Exception("Deck is empty")
+        # maintain data during llist reshuffling
+        card = self.top.get_data()
+        # declare and set new top card
+        new_top = self.top.get_next()
+        new_top.set_prev(None)
+        # delete object
+        self.top = None
+        self.top = new_top
+        # maintain accurate deck size
+        self.size -= 1
+        # return card data as a tuple (value, name)
+        return card
+
+
 
     def push(self, suit: str, name: str):
         """
