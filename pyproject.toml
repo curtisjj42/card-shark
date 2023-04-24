@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "card-shark"
+version = "0.0.1"
+authors = [
+  { name="Jason Curtis", email="curtisjj42@gmail.com" },
+  { name="Alex Kramer", email="alex.edward.kramer@gmail.com" },
+  { name="Zachary Armand", email="armand.z@northeastern.edu" },
+]
+description = "General deck builder for card games"
+readme = "README.md"
+requires-python = ">=3.1"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Northeastern License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/curtisjj42/card-shark
