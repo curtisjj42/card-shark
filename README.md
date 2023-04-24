@@ -30,7 +30,7 @@ Card-Shark was created as a final project for [Introduction to Programming for D
 - Python 3.1
 
 ## Setup
-
+Setup and installation is not currently functional. Please refer to a future release for further instructions.
 
 ## Examples
 Fundamentally, this package is used for creating a deck of cards, and then interacting with that deck in any number of ways. The Card class is intended for internal use by the Deck class and it's methods. Some examples of useage include using Deck.deal() to returns a list of card data, or using Deck.push() to  create a card and insert it into the deck. Below are examples of many of the built-in functions of the package and the Deck class.
