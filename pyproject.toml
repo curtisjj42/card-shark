@@ -21,3 +21,4 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://github.com/curtisjj42/card-shark
+"Bug Tracker" = "https://github.com/curtisjj42/card-shark/issues"
